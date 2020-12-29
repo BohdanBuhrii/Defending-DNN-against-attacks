@@ -1,0 +1,2 @@
+# took remote changes when merge .tex execution results
+*.pdf merge=ours
