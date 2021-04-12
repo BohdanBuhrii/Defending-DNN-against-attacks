@@ -97,7 +97,7 @@ class Attack:
         for i in range(num_iters):
             Y_hat, caches = self.model.multilayer_forward(instance)
 
-            attack.iter = i
+            self.iter = i
 
             # stop if adversarial
             if (instance.shape[1] == 1
