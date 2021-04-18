@@ -1,6 +1,8 @@
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from NeuralNet import NeuralNet
+from utils.json import *
 
 def get_datasets():
   df = pd.read_csv("data/train.csv")
@@ -18,3 +20,11 @@ def get_datasets():
   Y_train_e = encoder.fit_transform(Y_train).toarray()
 
   return X_train, Y_train, Y_train_e, X_test, Y_test
+
+def getNN(name, T=1):
+  cls = NeuralNet(layer_dims=[784, 60, 10], learning_rate=0.1, num_iter=100,
+                  normalize=False, mini_batch_size=2048, T=T)
+  
+  cls.parameters = read_from_json(name)
+  
+  return cls

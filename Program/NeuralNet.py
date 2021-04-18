@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 class NeuralNet:
 
     def __init__(self, layer_dims, normalize=True, learning_rate=0.01,
-                 num_iter=30000, precision=None, mini_batch_size=None):
+                 num_iter=30000, precision=None, mini_batch_size=None, T=1):
         self.learning_rate = learning_rate
         self.num_iter = num_iter
         self.normalize = normalize
         self.layer_dims = layer_dims
         self.precision = precision
         self.mini_batch_size = mini_batch_size
+        self.T = T
 
     def apply_normalization(self, X, mean=None, std=None):
         n = X.shape[0]
@@ -54,7 +55,7 @@ class NeuralNet:
         return 1 / np.power(np.cosh(Z), 2)
 
     def __softmax(self, Z):
-        eZ = np.exp(Z - np.max(Z))
+        eZ = np.exp((Z - np.max(Z))/self.T)
         return eZ / np.sum(eZ, axis=0, keepdims=True)
 
     def __initialize_parameters(self):
