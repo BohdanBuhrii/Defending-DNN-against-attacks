@@ -3,7 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 class NeuralNet:
 
     def __init__(self, layer_dims, normalize=True, learning_rate=0.01,
@@ -18,7 +17,6 @@ class NeuralNet:
         self.T = T
         self.random_layer = random_layer
         self.random_layer_coef = random_layer_coef
-        self.itworks = None
 
     def apply_normalization(self, X, mean=None, std=None):
         n = X.shape[0]
@@ -32,7 +30,7 @@ class NeuralNet:
         X_new = (X - mean) / std**2
 
         return X_new, mean, std
-
+    
     def denormalize(self, X):
       return X * self.__std**2 + self.__mean
 
@@ -112,13 +110,8 @@ class NeuralNet:
             A, cache = self.__forward_linear_activation(
                 A_prev, parameters["W"+str(l)], parameters["b"+str(l)], activation='tanh')
             caches.append(cache)
-
+            
             if(self.random_layer != None and self.random_layer == l):
-              
-              if(self.itworks==None):
-                print('it works')
-                self.itworks =1
-                
               A += (np.random.rand(*A.shape) - 0.5)*self.random_layer_coef
 
         AL, cache = self.__forward_linear_activation(
@@ -201,7 +194,7 @@ class NeuralNet:
                 learning_rate * grads["db" + str(l+1)]
 
         self.parameters = parameters
-
+        
     def __update_parameters_with_momentum(self, grads):
         parameters = self.parameters
         learning_rate = self.learning_rate
@@ -305,7 +298,7 @@ class NeuralNet:
     def predict_proba(self, X_vert):
         X = X_vert.T
         if self.normalize:
-            X, _, _ = self.apply_normalization(X, self.__mean, self.__std)
+            X, _, _ = self.apply_normalization (X, self.__mean, self.__std)
 
         probs = self.multilayer_forward(X)[0]
 

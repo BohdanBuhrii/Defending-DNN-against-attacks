@@ -21,9 +21,11 @@ def get_datasets():
 
   return X_train, Y_train, Y_train_e, X_test, Y_test
 
-def getNN(name, T=1):
+
+def getNN(name, T, random_layer, random_layer_coef):
   cls = NeuralNet(layer_dims=[784, 60, 10], learning_rate=0.1, num_iter=100,
-                  normalize=False, mini_batch_size=2048, T=T)
+                  normalize=False, mini_batch_size=2048, T=T,
+                  random_layer=random_layer, random_layer_coef=random_layer_coef)
   
   cls.parameters = read_from_json(name)
   
