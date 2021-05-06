@@ -8,6 +8,9 @@ def L2_norm(x, axis=0):
   return np.sqrt(np.square(x).sum(axis=axis))
 
 
+def robustness(X, X_adv, norm=L2_norm):
+  return np.sum(norm(X - X_adv)) / X.shape[0]
+
 def get_insights(classifier, epsilons, X_test_c, Y_test_c, max_iterations=1000, ignore_not_adversarial=False, show_progress=True):
   attack = Attack(classifier)
 
@@ -87,4 +90,4 @@ def get_insights(classifier, epsilons, X_test_c, Y_test_c, max_iterations=1000, 
 
   print('total time:', time.time() - tick)
   print('total iter:', total_iter)
-  return df, non_targeted
+  return df, non_targeted, initial, adversarial

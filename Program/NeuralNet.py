@@ -165,7 +165,7 @@ class NeuralNet:
         linear_cache, activation_cache = caches[L-1]
         A_prev, W, b = linear_cache
 
-        dZ = AL - Y
+        dZ = (AL - Y)# * self.T**2
         m = AL.shape[1]
         grads["dW" + str(L)] = 1 / m * np.dot(dZ, A_prev.T)
         grads["db" + str(L)] = 1 / m * np.sum(dZ, axis=1, keepdims=True)
