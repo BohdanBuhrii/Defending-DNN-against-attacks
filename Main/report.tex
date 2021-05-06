@@ -655,14 +655,41 @@
  \thispagestyle{empty}
  \addcontentsline{toc}{section}{Додатки}
  \section*{Додатки}
- 
- \textit{Додаток 1.} Деякі приклади ошукуючих зразків
- 
- \textit{Додаток 2.} Таблиці про нм?
- 
- \textit{Додаток 3.} Нм для розпізнавання цифр [TODO](prev work)
- 
- \textit{Додаток}
+ \dod{main-nn-300} Гіперпараметри щільної (dense) нейронної мережі для класифікації цифр, яка виступала прообразом під час досліджень.
+ \begin{center}
+ 	\begin{tabular}{|c|c|c|c|c|}
+ 		\hline
+ 		\tabboxc{4.1cm}{Функція активації для $l-$го шару ($l < L$) }
+ 		& \tabboxc{3cm}{Приховані шари}
+ 		& \tabboxc{2.3cm}{Швидкість навчання $\alpha$}
+ 		& \tabboxc{2.3cm}{Кількість ітерацій}
+ 		& \tabboxc{2cm}{Розмір міні-частини}
+ 		\\ \hline
+ 		
+ 		$tanh(x)$
+ 		& \tabboxc{4cm}{один прихований шар з 60-ти нейронів}
+ 		& $0.1$
+ 		& 300
+ 		& 2048
+ 		\\ \hline
+ 	\end{tabular}
+ \end{center}
+ %
+ \vspace{1cm}
+ \dod{adversarial-examples} Деякі приклади ошукуючих зразків, отриманих за допомогою ітераційного методу швидкого градієнту.
+ \begin{center}
+ 	\includegraphics[width=18cm]{../images/FGSM-adv-c.pdf}	
+ \end{center}
+ %
+ \vspace{1cm}
+ \textit{Додаток 3.}
+ \begin{center}	
+ \end{center}
+ %
+ \vspace{1cm}
+ \textit{Додаток 4.}
+ \begin{center}	
+ \end{center}
 
  \newpage
  \thispagestyle{empty}
@@ -732,7 +759,7 @@
 	\bibitem[13]{my-work}
 	\textit{Богдан Бугрій, Юрій Музичук} /
 	Атаки на глибокі нейронні мережі /
-	(2020)
+	Львів (2020)
 	
 	
  \end{thebibliography}
