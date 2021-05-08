@@ -8,7 +8,8 @@ class NeuralNet:
 
     def __init__(self, layer_dims, normalize=True, learning_rate=0.01,
                  num_iter=30000, precision=None, mini_batch_size=None, T=1,
-                 random_layer=None, random_layer_coef=0.01):
+                 noise_layer=None, noise_layer_sensitivity=None, noise_type='Laplacian',
+                 attack_size=None, eps=None, n_expected_scores=1):
         self.learning_rate = learning_rate
         self.num_iter = num_iter
         self.normalize = normalize
@@ -16,8 +17,15 @@ class NeuralNet:
         self.precision = precision
         self.mini_batch_size = mini_batch_size
         self.T = T
-        self.random_layer = random_layer
-        self.random_layer_coef = random_layer_coef
+        
+        # PixelDP parameters
+        self.noise_layer = noise_layer  # index of noise layer
+        self.noise_layer_sensitivity = noise_layer_sensitivity
+        self.noise_type = noise_type  # Laplacian or Gaussian
+        self.attack_size = attack_size # L_p size of noise expected from attack 
+        self.eps = eps
+        self.n_expected_scores = n_expected_scores
+        
         self.itworks = None
 
     def apply_normalization(self, X, mean=None, std=None):
@@ -108,18 +116,18 @@ class NeuralNet:
         L = len(parameters) // 2
 
         for l in range(1, L):
+            if(self.noise_layer == l):
+                #if(self.itworks == None):
+                #print('it works', l)
+                #  self.itworks = 1
+
+                A = self.add_noise(A)
+            
             A_prev = A
+            
             A, cache = self.__forward_linear_activation(
                 A_prev, parameters["W"+str(l)], parameters["b"+str(l)], activation='tanh')
             caches.append(cache)
-
-            if(self.random_layer != None and self.random_layer == l):
-              
-              if(self.itworks==None):
-                print('it works')
-                self.itworks =1
-                
-              A += (np.random.rand(*A.shape) - 0.5)*self.random_layer_coef
 
         AL, cache = self.__forward_linear_activation(
             A, parameters["W"+str(L)], parameters["b"+str(L)], activation='softmax')
@@ -128,6 +136,19 @@ class NeuralNet:
         #assert(AL.shape == (10, X.shape[1]))
 
         return AL, caches
+
+    def add_noise(self, A):
+        # Guassian
+        #omega = np.sqrt(2*np.log(1.25/self.delta)) * self.noise_layer_sensitivity * self.L / self.eps
+        
+        # Laplacian
+        omega = np.sqrt(2) * self.noise_layer_sensitivity * self.attack_size / self.eps
+        
+        #print(omega)
+        
+        B = np.copy(A)
+        
+        return B + np.random.laplace(scale = omega, size = A.shape) 
 
     def __backward_linear_activation(self, dA, cache, activation):
 
@@ -282,7 +303,7 @@ class NeuralNet:
 
     def fit(self, X_vert, Y_vert, print_cost=True):
 
-        X, Y = X_vert.T, Y_vert.T
+        X, Y = X_vert.T.copy(), Y_vert.T.copy()
 
         if self.normalize:
             X, self.__mean, self.__std = self.apply_normalization(X)
@@ -303,13 +324,18 @@ class NeuralNet:
         self.num_iter = prev_iter + self.num_iter
 
     def predict_proba(self, X_vert):
+        # n_expected_scores is for evaluation under PixelDP defence
+        
         X = X_vert.T
         if self.normalize:
             X, _, _ = self.apply_normalization(X, self.__mean, self.__std)
 
-        probs = self.multilayer_forward(X)[0]
+        probs = np.zeros((10, X_vert.shape[0]))  # TODO shape
+        
+        for _ in range(self.n_expected_scores):
+            probs += self.multilayer_forward(X)[0]
 
-        return probs.T
+        return probs.T / self.n_expected_scores
 
     def predict(self, X_vert):
         positive_probs = self.predict_proba(X_vert)

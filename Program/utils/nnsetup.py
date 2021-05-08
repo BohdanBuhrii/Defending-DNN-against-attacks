@@ -22,7 +22,7 @@ def get_datasets():
   return X_train, Y_train, Y_train_e, X_test, Y_test
 
 
-def getNN(name, T=None):
+def getNN(name, T=1):
   cls = NeuralNet(layer_dims=[784, 60, 10], learning_rate=0.1, num_iter=100,
                   normalize=False, mini_batch_size=2048, T=T)
   
