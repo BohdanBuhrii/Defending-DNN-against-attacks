@@ -64,8 +64,10 @@ def get_insights(classifier, epsilons, X_test_c, Y_test_c, max_iterations=1000, 
 
       y_hat_adv.append(prediction)
 
-      if(show_progress and total_attempts % 100 == 0):
+      if(show_progress and total_attempts % (X_test_c.shape[0]//10) == 0):
         print(total_attempts, 'instances,', len(adversarial), 'adversaries')
+
+    print(total_attempts, 'instances,', len(adversarial), 'adversaries')
 
     example = np.array(example)
     initial = np.array(initial)
