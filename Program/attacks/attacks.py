@@ -288,3 +288,71 @@ class Attack:
             plt.show()
 
         return instance
+
+    def attack_on_dp(self, instance, target, attack_type, num_iters,
+            pretrub_importance=None, adapting_rate=0.01, targeted=False, print_cost=True):
+
+        instance = instance.T
+        initial = instance.copy()
+
+        target = target.T
+        m = instance.shape[1]
+        costs = []
+        n_attempts = self.model.n_expected_scores
+
+        v = np.zeros(instance.shape)
+        s = np.zeros(instance.shape)
+
+        for i in range(num_iters):
+            self.iter = i
+            
+            grads = np.zeros(instance.shape)
+            Y_hat = np.zeros(target.shape)
+            for _ in range(n_attempts):
+                Y_hat_s, caches = self.model.multilayer_forward(instance)
+
+                cost = self.model.compute_cost(Y_hat_s, target)
+
+                grads += self.__multilayer_backward(Y_hat_s, target, caches).T
+                Y_hat += Y_hat_s
+
+            grads /= n_attempts
+            Y_hat /= n_attempts
+
+            # stop if adversarial
+            if (instance.shape[1] == 1 and not self.stop_if_adversarial
+                and (np.argmax(Y_hat) == np.argmax(target) and targeted
+                     or np.argmax(Y_hat) != np.argmax(target) and not targeted)):
+
+                break
+
+            if(pretrub_importance != None):
+                # TODO pretrub_importance*
+                grads = grads + 2*(instance - initial)
+
+            if(attack_type == 'grads'):
+                buff = instance - adapting_rate * \
+                    (2*(instance - initial) - 0.01*grads)
+
+            if(attack_type == 'FGSM'):
+                buff = self.update_instance_FGSM(
+                    instance, grads, adapting_rate, targeted)
+
+            if(attack_type == 'ADAM'):
+                buff, v, s = self.update_instance_ADAM(instance, grads,
+                                                    adapting_rate, targeted, v, s, i+1)
+
+            instance = np.clip(buff, 0, 1)
+
+            costs.append(cost)
+            if print_cost and i % 10 == 0:
+                print("Cost after iteration %i: %f" % (i, cost))
+
+        if print_cost:
+            plt.title(str(num_iters) + " iterations")
+            plt.plot(costs)
+            plt.ylabel("Cost")
+            plt.xlabel("Iteration")
+            plt.show()
+
+        return instance

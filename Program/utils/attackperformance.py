@@ -93,3 +93,59 @@ def get_insights(classifier, epsilons, X_test_c, Y_test_c, max_iterations=1000, 
   print('total time:', time.time() - tick)
   print('total iter:', total_iter)
   return df, non_targeted, initial, adversarial
+
+def get_insights_dp(classifier, epsilons, X_test_c, Y_test_c, max_iterations=1000, ignore_not_adversarial=False, show_progress=True):
+  attack = Attack(classifier)
+
+  df = pd.DataFrame(
+      columns=['target', 'successful attempts', 'epsilon'])  # 'initial',
+  non_targeted = pd.DataFrame(
+      columns=['original', 'prediction', 'iterations', 'epsilon', 'L2 norm'])
+
+  Y_hat_c = classifier.predict(X_test_c)
+
+  tick = time.time()
+  # np.arange(50)/255:#, 3/255, 5/255, 10/255, 15/255, 30/255, 50/255, 80/255, 120/255]:#[1/255]:#0.007, 0.01, 0.05, 0.1, 0.2]:
+  for epsilon in epsilons:
+    print('epsilon =', epsilon)
+    total_attempts = 0
+    total_iter = 0
+    
+    x_adv = attack.attack_on_dp(x,
+                          np.array([[1 if i == y else 0 for i in range(10)]]),\
+                          'FGSM',\
+                          max_iterations,\
+                          adapting_rate=epsilon, print_cost=False, targeted=False).T[0]
+
+    prediction = classifier.predict(x_adv)
+    
+
+    non_targeted = non_targeted.append({'original': y[0], 'prediction': prediction,
+                                        'iterations': attack.iter, 'L2 norm': L2_norm(x[0]-x_adv),
+                                        'epsilon': epsilon}, ignore_index=True)
+
+    y_hat_adv.append(prediction)
+
+      if(show_progress and total_attempts % (X_test_c.shape[0]//10) == 0):
+        print(total_attempts, 'instances,', len(adversarial), 'adversaries')
+
+    print(total_attempts, 'instances,', len(adversarial), 'adversaries')
+
+    print('------------------------------')
+    #print('------------------------------',example.shape)
+    #Y_hat = classifier.predict(example).reshape(true_label.shape)
+
+    #print((Y_hat == target).shape)
+    #print((Y_hat != Y_test) * (Y_hat == target) * ((cls.predict(X_test)==Y_test).reshape(Y_hat.shape)))
+
+    successful_attempts = len(adversarial)  # np.sum(
+    #  (Y_hat != true_label)
+    #  * (Y_hat == target))
+    #* (true_label == cls.predict(X_test_c).reshape(true_label.shape)))
+
+    df = df.append({'successful attempts': successful_attempts,
+                    'epsilon': epsilon}, ignore_index=True)
+
+  print('total time:', time.time() - tick)
+  print('total iter:', total_iter)
+  return df, non_targeted, initial, adversarial, example
