@@ -105,7 +105,8 @@
 
 \title[Short title]{Розробка алгоритмів захисту від атак на глибокі нейронні мережі} % The short title appears at the bottom of every slide, the full title is only on the title page
 
-\author{Бугрій Богдан} % Your name
+\author[Бугрій Б.О.]{Бугрій Б.О.\\Науковий керівник: Музичук Ю.А.} % Your name
+
 \institute[UCLA] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
 	Львівський національний університет імені Івана Франка \\
@@ -164,24 +165,8 @@
 
 	%-------------------------------------------------
 	%\subsection{Типи захисту}
-	\begin{frame}
-		\frametitle{Типи захисту}
-		\begin{block} {За типом атак} 
-			\begin{itemize}
-				\item Захист від ошукуючих атак.
-				\item Захист від викрадення.
-				\item Захист від отруєння.
-			\end{itemize}
-		\end{block}
-		\vspace{.5cm}
-		\begin{block} {За стратегією захисту}
-			\begin{itemize}
-				\item Модифікація архітектури моделі та процесу тренування.
-				\item Генерація специфічного тренувального набору.
-				\item Створення захисної оболонки.
-			\end{itemize}
-		\end{block}	
-	\end{frame}
+	
+
 	\begin{comment}
 	\begin{columns}
 	\begin{column}{.40\textwidth}
@@ -314,13 +299,15 @@
 		\frametitle{Переваги та недоліки}
 		\begin{block}{Переваги}
 			\begin{itemize}
-				\item 
+				\item Не потребує додаткових ресурсів під час передбачень
+				\item Нова модель має незначні втрати точності
 			\end{itemize}
 		\end{block}
 	
 		\begin{block}{Недоліки}
 			\begin{itemize}
-				\item 
+				\item Не можна гарантувати певний рівень стійкості
+				\item Великі затрати на тренування моделі-образу
 			\end{itemize}
 		\end{block}
 	\end{frame}
@@ -398,13 +385,11 @@
 		
 		\begin{figure}[h]
 			\centering
-			\includegraphics[width=0.8\textwidth]{../images/robustness.pdf}
+			\includegraphics[width=0.9\textwidth]{../images/robustness.pdf}
 			
 			%\caption{Область $D$}
 			%\label{fig:double-connected-region}
 		\end{figure}
-	
-		Ключові зауваження і спостереження
 	\end{frame}
 
 	\begin{frame}
@@ -448,20 +433,20 @@
 				\\ \hline
 			\end{tabular}
 		\end{center}
-		Ключові зауваження і спостереження
+		%Ключові зауваження і спостереження
 	\end{frame}
 
 	\begin{frame}
 
 		\begin{figure}[h]
 			\centering
-			\includegraphics[width=0.8\textwidth]{../images/distAllT7.pdf}
+			\includegraphics[width=1\textwidth]{../images/distAllT7.pdf}
 			
 			%\caption{Область $D$}
 			%\label{fig:double-connected-region}
 		\end{figure}
 	
-	    Ключові зауваження і спостереження
+	    %Ключові зауваження і спостереження
 	\end{frame}
 
 	
@@ -475,15 +460,15 @@
 		\frametitle{Висновки}
 		
 		\begin{itemize}
-			\item Стратегії захисту можна розділити на типи
+			\item Алгоритми захисту можна класифікувати за типом атак та стратегією захисту.
+			\item Захищена модель має бути стійкою до невеликих змін вхідних даних.
 			
-			
-			\item
+			\item Немає універсального алгоритму захисту.
+			\item Розглянута проблема потребує додаткових досліджень.
 		\end{itemize}
-		Наш вклад в роботу.
 	\end{frame}
 		
-\section*{Література}
+%\section*{Література}
 \begin{frame}
 	\thispagestyle{empty}
 	\frametitle{Література}
@@ -512,6 +497,13 @@
 		
 		
 	\end{thebibliography}
+\end{frame}
+
+ \begin{frame}
+	\begin{center}
+		\LARGE
+		Дякую за увагу\\
+	\end{center}
 \end{frame}
 
 \end{document} 
